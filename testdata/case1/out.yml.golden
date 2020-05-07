@@ -1,0 +1,10 @@
+name: underlay1
+dsn: ""
+docPath: new/doc/path
+er:
+  format: png
+  comment: true
+  distance: 1
+comments:
+- table: posts
+  tableComment: blog posts

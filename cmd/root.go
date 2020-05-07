@@ -22,10 +22,19 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
+	"github.com/goccy/go-yaml"
+	"github.com/imdario/mergo"
+	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/datasource"
+	outconfig "github.com/k1LoW/tbls/output/config"
+	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +49,7 @@ var rootCmd = &cobra.Command{
 	Short: "build tbls config",
 	Long:  `build tbls config.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := runBuild(cmd, os.Stdout)
+		err := runBuild(underlays, overlays, os.Stdout)
 		if err != nil {
 			cmd.PrintErrln(err)
 			os.Exit(1)
@@ -48,8 +57,149 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func runBuild(cmd *cobra.Command, stdout io.Writer) error {
+func runBuild(underlays, overlays []string, stdout io.Writer) error {
+	var (
+		s   *schema.Schema
+		err error
+	)
+	sstr := os.Getenv("TBLS_SCHEMA")
+	if sstr != "" {
+		s, err = datasource.AnalyzeJSONString(os.Getenv("TBLS_SCHEMA"))
+		if err != nil {
+			return err
+		}
+	}
+
+	c, err := config.New()
+	if err != nil {
+		return err
+	}
+
+	// underlays
+	for _, u := range underlays {
+		uc, err := loadConfigFile(u)
+		if err != nil {
+			return err
+		}
+		uc, err = pruneConfig(uc, s)
+		if err != nil {
+			return err
+		}
+		c, err = mergeConfig(c, uc)
+		if err != nil {
+			return err
+		}
+	}
+
+	// -c
+	cc, err := config.New()
+	if err != nil {
+		return err
+	}
+	configPath := os.Getenv("TBLS_CONFIG_PATH")
+	if configPath != "" {
+		if err := cc.LoadConfigFile(configPath); err != nil {
+			return err
+		}
+	}
+	c, err = mergeConfig(c, cc)
+	if err != nil {
+		return err
+	}
+
+	// overlays
+	for _, o := range overlays {
+		oc, err := loadConfigFile(o)
+		if err != nil {
+			return err
+		}
+		oc, err = pruneConfig(oc, s)
+		if err != nil {
+			return err
+		}
+		c, err = mergeConfig(c, oc)
+		if err != nil {
+			return err
+		}
+	}
+
+	d := yaml.NewEncoder(stdout)
+	defer d.Close()
+	if err := d.Encode(c); err != nil {
+		return errors.WithStack(err)
+	}
+
 	return nil
+}
+
+type fileType int
+
+const (
+	fileTypeUnknown fileType = iota
+	fileTypeConfig
+	fileTypeSchema
+)
+
+func detectConfigOrSchema(f string) fileType {
+	ext := filepath.Ext(f)
+	switch ext {
+	case ".yml", ".yaml":
+		return fileTypeConfig
+	case ".json":
+		return fileTypeSchema
+	default:
+		return fileTypeUnknown
+	}
+}
+
+func loadConfigFile(path string) (*config.Config, error) {
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+	if f.IsDir() {
+		return nil, fmt.Errorf("%s is directory", path)
+	}
+	c, err := config.New()
+	if err != nil {
+		return nil, err
+	}
+	ft := detectConfigOrSchema(path)
+	switch ft {
+	case fileTypeUnknown:
+		return nil, fmt.Errorf("unknown file type: %s", path)
+	case fileTypeConfig:
+		if err := c.LoadConfigFile(path); err != nil {
+			return nil, err
+		}
+	case fileTypeSchema:
+		s, err := datasource.AnalyzeJSONString("json://" + path)
+		if err != nil {
+			return nil, err
+		}
+		oc := outconfig.New(c)
+		buf := new(bytes.Buffer)
+		if err := oc.OutputSchema(buf, s); err != nil {
+			return nil, err
+		}
+		if err := c.LoadConfig(buf.Bytes()); err != nil {
+			return nil, err
+		}
+	}
+	return c, nil
+}
+
+func pruneConfig(c *config.Config, s *schema.Schema) (*config.Config, error) {
+	return c, nil
+}
+
+func mergeConfig(a, b *config.Config) (*config.Config, error) {
+	err := mergo.Merge(a, *b, mergo.WithOverride)
+	return a, err
 }
 
 func Execute() {
@@ -60,7 +210,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string, "underlay")
-	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "v", []string, "overlay")
-	rootCmd.Flags().StringVarP(&out, "out", "o", "", "output file path")
+	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string{}, "underlay")
+	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "o", []string{}, "overlay")
+	rootCmd.Flags().StringVarP(&out, "out", "", "", "output file path")
 }
