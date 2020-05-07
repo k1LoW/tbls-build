@@ -23,9 +23,15 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
+)
+
+var (
+	underlays []string
+	overlays  []string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -34,7 +40,7 @@ var rootCmd = &cobra.Command{
 	Short: "build tbls config",
 	Long:  `build tbls config.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := runBuild(cmd, args)
+		err := runBuild(cmd, os.Stdout)
 		if err != nil {
 			cmd.PrintErrln(err)
 			os.Exit(1)
@@ -42,7 +48,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func runBuild(cmd *cobra.Command, args []string) error {
+func runBuild(cmd *cobra.Command, stdout io.Writer) error {
 	return nil
 }
 
@@ -54,5 +60,7 @@ func Execute() {
 }
 
 func init() {
-
+	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string, "underlay")
+	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "v", []string, "overlay")
+	rootCmd.Flags().StringVarP(&out, "out", "o", "", "output file path")
 }
