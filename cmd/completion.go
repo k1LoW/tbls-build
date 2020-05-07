@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -54,43 +55,42 @@ tbls completion zsh > $fpath[1]/_tbls-build
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		err := runCompletion(cmd, args)
-		if err != nil {
+		var (
+			o   *os.File
+			err error
+		)
+		sh := args[0]
+		if out == "" {
+			o = os.Stdout
+		} else {
+			o, err = os.Create(out)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(1)
+			}
+		}
+		if err := runCompletion(cmd, sh, o); err != nil {
+			_ = o.Close()
+			cmd.PrintErrln(err)
+			os.Exit(1)
+		}
+		if err := o.Close(); err != nil {
 			cmd.PrintErrln(err)
 			os.Exit(1)
 		}
 	},
 }
 
-func runCompletion(cmd *cobra.Command, args []string) error {
-	var (
-		o   *os.File
-		err error
-	)
-	sh := args[0]
-	if out == "" {
-		o = os.Stdout
-	} else {
-		o, err = os.Create(out)
-		if err != nil {
-			return err
-		}
-	}
-
+func runCompletion(cmd *cobra.Command, sh string, o io.Writer) error {
 	switch sh {
 	case "bash":
-		if err := rootCmd.GenBashCompletion(o); err != nil {
-			_ = o.Close()
+		if err := cmd.GenBashCompletion(o); err != nil {
 			return err
 		}
 	case "zsh":
-		if err := rootCmd.GenZshCompletion(o); err != nil {
-			_ = o.Close()
+		if err := cmd.GenZshCompletion(o); err != nil {
 			return err
 		}
-	}
-	if err := o.Close(); err != nil {
-		return err
 	}
 	return nil
 }
