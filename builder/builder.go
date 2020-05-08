@@ -58,7 +58,7 @@ func LoadConfigFile(path string) (*config.Config, error) {
 			return nil, err
 		}
 	case fileTypeSchema:
-		s, err := datasource.AnalyzeJSONString("json://" + path)
+		s, err := datasource.AnalyzeJSON("json://" + path)
 		if err != nil {
 			return nil, err
 		}
