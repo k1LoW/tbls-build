@@ -11,7 +11,7 @@ import (
 )
 
 func TestRunBuild(t *testing.T) {
-	cases := []string{"case_config"}
+	cases := []string{"case_config", "case_schema", "case_postgres_schema"}
 	for _, c := range cases {
 		dir := filepath.Join(testdataDir(), c)
 
@@ -62,7 +62,7 @@ func TestRunBuild(t *testing.T) {
 		}
 
 		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
-			t.Errorf("diff\n%s", diff)
+			t.Errorf("case '%s': diff exists\n%s", c, diff)
 		}
 	}
 }

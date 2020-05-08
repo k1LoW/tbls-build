@@ -1,0 +1,18 @@
+docPath: This is not displayed (overlay1)
+comments:
+-
+  table: users
+  tableComment: users (overlay1)
+  columnComments:
+    username: username (overlay1)
+    password: password (overlay1)
+  labels:
+    - b
+    - c
+relations:
+- table: user_options
+  columns:
+    - user_id
+  parentTable: users
+  parentColumns:
+    - id

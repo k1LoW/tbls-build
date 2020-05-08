@@ -21,6 +21,17 @@ const (
 	fileTypeSchema
 )
 
+type Builder struct {
+	schema *schema.Schema
+}
+
+// New
+func New(s *schema.Schema) *Builder {
+	return &Builder{
+		schema: s,
+	}
+}
+
 func detectConfigOrSchema(f string) fileType {
 	ext := filepath.Ext(f)
 	switch ext {
@@ -33,7 +44,7 @@ func detectConfigOrSchema(f string) fileType {
 	}
 }
 
-func LoadConfigFile(path string) (*config.Config, error) {
+func (b *Builder) LoadConfigFile(path string) (*config.Config, error) {
 	path, err := filepath.Abs(path)
 	if err != nil {
 		return nil, err
@@ -75,6 +86,7 @@ func schemaToConfig(s *schema.Schema) (*config.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	cfg.Name = s.Name
 	for _, t := range s.Tables {
 		ac := config.AdditionalComment{
 			Table:              t.Name,
@@ -135,9 +147,22 @@ func schemaToConfig(s *schema.Schema) (*config.Config, error) {
 	return cfg, nil
 }
 
-func PruneConfig(c *config.Config, s *schema.Schema) (*config.Config, error) {
+func (b *Builder) PruneConfig(cfg *config.Config) (*config.Config, error) {
+	if b.schema == nil {
+		return cfg, nil
+	}
+
+	// Normalize table name
+	for i := range cfg.Comments {
+		cfg.Comments[i].Table = b.schema.NormalizeTableName(cfg.Comments[i].Table)
+	}
+	for i := range cfg.Relations {
+		cfg.Relations[i].Table = b.schema.NormalizeTableName(cfg.Relations[i].Table)
+		cfg.Relations[i].ParentTable = b.schema.NormalizeTableName(cfg.Relations[i].ParentTable)
+	}
+
 	// TODO
-	return c, nil
+	return cfg, nil
 }
 
 type configTransformer struct{}
@@ -245,7 +270,7 @@ func uniq(a []string) []string {
 	return u
 }
 
-func MergeConfig(a, b *config.Config) (*config.Config, error) {
-	err := mergo.Merge(a, *b, mergo.WithOverride, mergo.WithTransformers(configTransformer{}))
-	return a, err
+func (b *Builder) MergeConfig(dst, src *config.Config) (*config.Config, error) {
+	err := mergo.Merge(dst, *src, mergo.WithOverride, mergo.WithTransformers(configTransformer{}))
+	return dst, err
 }

@@ -67,6 +67,8 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 		}
 	}
 
+	b := builder.New(s)
+
 	c, err := config.New()
 	if err != nil {
 		return err
@@ -74,15 +76,15 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 
 	// underlays
 	for _, u := range underlays {
-		uc, err := builder.LoadConfigFile(u)
+		uc, err := b.LoadConfigFile(u)
 		if err != nil {
 			return err
 		}
-		uc, err = builder.PruneConfig(uc, s)
+		uc, err = b.PruneConfig(uc)
 		if err != nil {
 			return err
 		}
-		c, err = builder.MergeConfig(c, uc)
+		c, err = b.MergeConfig(c, uc)
 		if err != nil {
 			return err
 		}
@@ -99,22 +101,26 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 			return err
 		}
 	}
-	c, err = builder.MergeConfig(c, cc)
+	cc, err = b.PruneConfig(cc)
+	if err != nil {
+		return err
+	}
+	c, err = b.MergeConfig(c, cc)
 	if err != nil {
 		return err
 	}
 
 	// overlays
 	for _, o := range overlays {
-		oc, err := builder.LoadConfigFile(o)
+		oc, err := b.LoadConfigFile(o)
 		if err != nil {
 			return err
 		}
-		oc, err = builder.PruneConfig(oc, s)
+		oc, err = b.PruneConfig(oc)
 		if err != nil {
 			return err
 		}
-		c, err = builder.MergeConfig(c, oc)
+		c, err = b.MergeConfig(c, oc)
 		if err != nil {
 			return err
 		}

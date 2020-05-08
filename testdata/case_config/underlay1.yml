@@ -1,6 +1,4 @@
 name: name underlay1
-er:
-  comment: true
 comments:
 - table: posts
   tableComment: blog posts (underlay1)

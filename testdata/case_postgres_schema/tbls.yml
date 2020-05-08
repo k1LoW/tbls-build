@@ -1,0 +1,2 @@
+dsn: mysql://root:mypass@localhost:3306/testdb
+docPath: This is not displayed (tbls.yml)
