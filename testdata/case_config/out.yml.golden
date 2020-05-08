@@ -1,4 +1,4 @@
-name: underlay1
+name: name underlay1
 dsn: mysql://root:mypass@localhost:3306/testdb
 docPath: new/doc/path
 er:
@@ -6,5 +6,20 @@ er:
   comment: true
   distance: 1
 comments:
+- table: users
+  tableComment: users (underlay2)
+  columnComments:
+    email: email (underlay2)
+    password: password (overlay1)
+    username: username (underlay2)
+  labels:
+  - b
+  - c
+  - a
+- table: user_options
+  tableComment: user_options (underlay2)
 - table: posts
-  tableComment: blog posts
+  tableComment: blog posts (underlay1)
+  columnComments:
+    body: blog body (underlay1)
+    title: blog title (underlay1)

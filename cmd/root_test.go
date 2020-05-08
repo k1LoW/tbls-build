@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestRunBuild(t *testing.T) {
@@ -59,8 +61,8 @@ func TestRunBuild(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if string(got) != string(want) {
-			t.Errorf("got\n%v\nwant\n%v", string(got), string(want))
+		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
+			t.Errorf("diff\n%s", diff)
 		}
 	}
 }

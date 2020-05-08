@@ -26,6 +26,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 
 	"github.com/goccy/go-yaml"
 	"github.com/imdario/mergo"
@@ -257,8 +258,120 @@ func pruneConfig(c *config.Config, s *schema.Schema) (*config.Config, error) {
 	return c, nil
 }
 
+type commentsTransformer struct{}
+
+func (t commentsTransformer) Transformer(typ reflect.Type) func(dst, src reflect.Value) error {
+	if typ == reflect.TypeOf([]config.AdditionalComment{}) {
+		return func(dst, src reflect.Value) error {
+			if dst.CanSet() {
+				dstv, ok := dst.Interface().([]config.AdditionalComment)
+				if !ok {
+					return errors.New("transform error")
+				}
+				srcv, ok := src.Interface().([]config.AdditionalComment)
+				if !ok {
+					return errors.New("transform error")
+				}
+				a := srcv[:]
+				a = append(a, dstv...)
+				b := []config.AdditionalComment{}
+				m := map[string]config.AdditionalComment{}
+				for _, v := range a {
+					key := v.Table
+					if ac, ok := m[key]; ok {
+						// tableComment
+						if v.TableComment != "" {
+							ac.TableComment = v.TableComment
+						}
+						// columnComments
+						for k, c := range v.ColumnComments {
+							ac.ColumnComments[k] = c
+						}
+						// indexComments
+						for k, c := range v.IndexComments {
+							ac.IndexComments[k] = c
+						}
+						// constraintComments
+						for k, c := range v.ConstraintComments {
+							ac.ConstraintComments[k] = c
+						}
+						// triggerComments
+						for k, c := range v.TriggerComments {
+							ac.TriggerComments[k] = c
+						}
+						// labels
+						ac.Labels = uniq(append(ac.Labels, v.Labels...))
+
+						m[key] = ac
+					} else {
+						m[key] = v
+					}
+				}
+				for _, v := range a {
+					key := v.Table
+					if ac, ok := m[key]; ok {
+						b = append(b, ac)
+						delete(m, key)
+					}
+				}
+				dst.Set(reflect.ValueOf(b))
+			}
+			return nil
+		}
+	}
+	return nil
+}
+
+type relationsTransformer struct{}
+
+func (t relationsTransformer) Transformer(typ reflect.Type) func(dst, src reflect.Value) error {
+	if typ == reflect.TypeOf([]config.AdditionalRelation{}) {
+		return func(dst, src reflect.Value) error {
+			if dst.CanSet() {
+				dstv, ok := dst.Interface().([]config.AdditionalRelation)
+				if !ok {
+					return errors.New("transform error")
+				}
+				srcv, ok := src.Interface().([]config.AdditionalRelation)
+				if !ok {
+					return errors.New("transform error")
+				}
+				a := srcv[:]
+				a = append(a, dstv...)
+				b := []config.AdditionalRelation{}
+				m := map[string]struct{}{}
+				for _, v := range a {
+					key := fmt.Sprintf("%s-%s-%s-%s", v.Table, v.Columns, v.ParentTable, v.ParentColumns)
+					if _, ok := m[key]; !ok {
+						m[key] = struct{}{}
+						b = append(b, v)
+					}
+				}
+				dst.Set(reflect.ValueOf(b))
+			}
+			return nil
+		}
+	}
+	return nil
+}
+
+func uniq(a []string) []string {
+	m := map[string]struct{}{}
+	for _, e := range a {
+		m[e] = struct{}{}
+	}
+	u := []string{}
+	for _, e := range a {
+		if _, ok := m[e]; ok {
+			u = append(u, e)
+			delete(m, e)
+		}
+	}
+	return u
+}
+
 func mergeConfig(a, b *config.Config) (*config.Config, error) {
-	err := mergo.Merge(a, *b, mergo.WithOverride)
+	err := mergo.Merge(a, *b, mergo.WithOverride, mergo.WithTransformers(commentsTransformer{}))
 	return a, err
 }
 

@@ -1,4 +1,11 @@
-name: underlay1
+name: name underlay1
 er:
   comment: true
+comments:
+- table: posts
+  tableComment: blog posts (underlay1)
+  columnComments:
+    title: blog title (underlay1)
+    body: blog body (underlay1)
+
   
