@@ -22,7 +22,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -32,7 +31,6 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
-	outconfig "github.com/k1LoW/tbls/output/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -181,19 +179,81 @@ func loadConfigFile(path string) (*config.Config, error) {
 		if err != nil {
 			return nil, err
 		}
-		oc := outconfig.New(c)
-		buf := new(bytes.Buffer)
-		if err := oc.OutputSchema(buf, s); err != nil {
-			return nil, err
-		}
-		if err := c.LoadConfig(buf.Bytes()); err != nil {
+		c, err = schemaToConfig(s)
+		if err != nil {
 			return nil, err
 		}
 	}
 	return c, nil
 }
 
+func schemaToConfig(s *schema.Schema) (*config.Config, error) {
+	cfg, err := config.New()
+	if err != nil {
+		return nil, err
+	}
+	for _, t := range s.Tables {
+		ac := config.AdditionalComment{
+			Table:              t.Name,
+			TableComment:       t.Comment,
+			ColumnComments:     map[string]string{},
+			IndexComments:      map[string]string{},
+			ConstraintComments: map[string]string{},
+			TriggerComments:    map[string]string{},
+			Labels:             []string{},
+		}
+		for _, c := range t.Columns {
+			if c.Comment == "" {
+				continue
+			}
+			ac.ColumnComments[c.Name] = c.Comment
+		}
+		for _, i := range t.Indexes {
+			if i.Comment == "" {
+				continue
+			}
+			ac.IndexComments[i.Name] = i.Comment
+		}
+		for _, c := range t.Constraints {
+			if c.Comment == "" {
+				continue
+			}
+			ac.ConstraintComments[c.Name] = c.Comment
+		}
+		for _, trig := range t.Triggers {
+			if trig.Comment == "" {
+				continue
+			}
+			ac.TriggerComments[trig.Name] = trig.Comment
+		}
+		for _, l := range t.Labels {
+			ac.Labels = append(ac.Labels, l.Name)
+		}
+		cfg.Comments = append(cfg.Comments, ac)
+	}
+
+	for _, r := range s.Relations {
+		ar := config.AdditionalRelation{
+			Table:         r.Table.Name,
+			Columns:       []string{},
+			ParentTable:   r.ParentTable.Name,
+			ParentColumns: []string{},
+			Def:           r.Def,
+		}
+		for _, c := range r.Columns {
+			ar.Columns = append(ar.Columns, c.Name)
+		}
+		for _, c := range r.ParentColumns {
+			ar.ParentColumns = append(ar.ParentColumns, c.Name)
+		}
+		cfg.Relations = append(cfg.Relations, ar)
+	}
+
+	return cfg, nil
+}
+
 func pruneConfig(c *config.Config, s *schema.Schema) (*config.Config, error) {
+	// TODO
 	return c, nil
 }
 

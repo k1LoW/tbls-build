@@ -1,5 +1,5 @@
 name: underlay1
-dsn: ""
+dsn: mysql://root:mypass@localhost:3306/testdb
 docPath: new/doc/path
 er:
   format: png

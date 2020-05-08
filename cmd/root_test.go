@@ -9,7 +9,7 @@ import (
 )
 
 func TestRunBuild(t *testing.T) {
-	cases := []string{"case1"}
+	cases := []string{"case_config"}
 	for _, c := range cases {
 		dir := filepath.Join(testdataDir(), c)
 
@@ -60,7 +60,7 @@ func TestRunBuild(t *testing.T) {
 		}
 
 		if string(got) != string(want) {
-			t.Errorf("got %v\nwant %v", string(got), string(want))
+			t.Errorf("got\n%v\nwant\n%v", string(got), string(want))
 		}
 	}
 }
