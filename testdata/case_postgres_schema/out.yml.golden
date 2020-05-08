@@ -1,5 +1,5 @@
 name: name underlay1
-dsn: mysql://root:mypass@localhost:3306/testdb
+dsn: pg://postgres:pgpass@localhost:5432/testdb
 docPath: new/doc/path
 er:
   format: png
