@@ -1,0 +1,9 @@
+docPath: new/doc/path
+relations:
+- table: user_access_logs
+  columns:
+    - user_id
+  parentTable: users
+  parentColumns:
+    - id
+

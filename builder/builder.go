@@ -32,18 +32,6 @@ func New(s *schema.Schema) *Builder {
 	}
 }
 
-func detectConfigOrSchema(f string) fileType {
-	ext := filepath.Ext(f)
-	switch ext {
-	case ".yml", ".yaml":
-		return fileTypeConfig
-	case ".json":
-		return fileTypeSchema
-	default:
-		return fileTypeUnknown
-	}
-}
-
 func (b *Builder) LoadConfigFile(path string) (*config.Config, error) {
 	path, err := filepath.Abs(path)
 	if err != nil {
@@ -81,87 +69,47 @@ func (b *Builder) LoadConfigFile(path string) (*config.Config, error) {
 	return c, nil
 }
 
-func schemaToConfig(s *schema.Schema) (*config.Config, error) {
-	cfg, err := config.New()
-	if err != nil {
-		return nil, err
-	}
-	cfg.Name = s.Name
-	for _, t := range s.Tables {
-		ac := config.AdditionalComment{
-			Table:              t.Name,
-			TableComment:       t.Comment,
-			ColumnComments:     map[string]string{},
-			IndexComments:      map[string]string{},
-			ConstraintComments: map[string]string{},
-			TriggerComments:    map[string]string{},
-			Labels:             []string{},
-		}
-		for _, c := range t.Columns {
-			if c.Comment == "" {
-				continue
-			}
-			ac.ColumnComments[c.Name] = c.Comment
-		}
-		for _, i := range t.Indexes {
-			if i.Comment == "" {
-				continue
-			}
-			ac.IndexComments[i.Name] = i.Comment
-		}
-		for _, c := range t.Constraints {
-			if c.Comment == "" {
-				continue
-			}
-			ac.ConstraintComments[c.Name] = c.Comment
-		}
-		for _, trig := range t.Triggers {
-			if trig.Comment == "" {
-				continue
-			}
-			ac.TriggerComments[trig.Name] = trig.Comment
-		}
-		for _, l := range t.Labels {
-			ac.Labels = append(ac.Labels, l.Name)
-		}
-		cfg.Comments = append(cfg.Comments, ac)
-	}
-
-	for _, r := range s.Relations {
-		ar := config.AdditionalRelation{
-			Table:         r.Table.Name,
-			Columns:       []string{},
-			ParentTable:   r.ParentTable.Name,
-			ParentColumns: []string{},
-			Def:           r.Def,
-		}
-		for _, c := range r.Columns {
-			ar.Columns = append(ar.Columns, c.Name)
-		}
-		for _, c := range r.ParentColumns {
-			ar.ParentColumns = append(ar.ParentColumns, c.Name)
-		}
-		cfg.Relations = append(cfg.Relations, ar)
-	}
-
-	return cfg, nil
-}
-
 func (b *Builder) PruneConfig(cfg *config.Config) (*config.Config, error) {
 	if b.schema == nil {
 		return cfg, nil
 	}
 
-	// Normalize table name
-	for i := range cfg.Comments {
-		cfg.Comments[i].Table = b.schema.NormalizeTableName(cfg.Comments[i].Table)
+	// prune default
+	if cfg.DocPath == config.DefaultDocPath {
+		cfg.DocPath = ""
 	}
-	for i := range cfg.Relations {
-		cfg.Relations[i].Table = b.schema.NormalizeTableName(cfg.Relations[i].Table)
-		cfg.Relations[i].ParentTable = b.schema.NormalizeTableName(cfg.Relations[i].ParentTable)
+	if cfg.ER.Format == config.DefaultERFormat {
+		cfg.ER.Format = ""
+	}
+	if cfg.ER.Distance != nil && *cfg.ER.Distance == config.DefaultDistance {
+		cfg.ER.Distance = nil
 	}
 
-	// TODO
+	// normalize table name and prune non-existent table
+	comments := []config.AdditionalComment{}
+	for _, c := range cfg.Comments {
+		if _, err := b.schema.FindTableByName(c.Table); err != nil {
+			continue
+		}
+		c.Table = b.schema.NormalizeTableName(c.Table)
+		comments = append(comments, c)
+	}
+	cfg.Comments = comments
+
+	relations := []config.AdditionalRelation{}
+	for _, r := range cfg.Relations {
+		if _, err := b.schema.FindTableByName(r.Table); err != nil {
+			continue
+		}
+		if _, err := b.schema.FindTableByName(r.ParentTable); err != nil {
+			continue
+		}
+		r.Table = b.schema.NormalizeTableName(r.Table)
+		r.ParentTable = b.schema.NormalizeTableName(r.ParentTable)
+		relations = append(relations, r)
+	}
+	cfg.Relations = relations
+
 	return cfg, nil
 }
 
@@ -255,6 +203,89 @@ func (t configTransformer) Transformer(typ reflect.Type) func(dst, src reflect.V
 	return nil
 }
 
+func (b *Builder) MergeConfig(dst, src *config.Config) (*config.Config, error) {
+	err := mergo.Merge(dst, *src, mergo.WithOverride, mergo.WithTransformers(configTransformer{}))
+	return dst, err
+}
+
+func detectConfigOrSchema(f string) fileType {
+	ext := filepath.Ext(f)
+	switch ext {
+	case ".yml", ".yaml":
+		return fileTypeConfig
+	case ".json":
+		return fileTypeSchema
+	default:
+		return fileTypeUnknown
+	}
+}
+
+func schemaToConfig(s *schema.Schema) (*config.Config, error) {
+	cfg, err := config.New()
+	if err != nil {
+		return nil, err
+	}
+	cfg.Name = s.Name
+	for _, t := range s.Tables {
+		ac := config.AdditionalComment{
+			Table:              t.Name,
+			TableComment:       t.Comment,
+			ColumnComments:     map[string]string{},
+			IndexComments:      map[string]string{},
+			ConstraintComments: map[string]string{},
+			TriggerComments:    map[string]string{},
+			Labels:             []string{},
+		}
+		for _, c := range t.Columns {
+			if c.Comment == "" {
+				continue
+			}
+			ac.ColumnComments[c.Name] = c.Comment
+		}
+		for _, i := range t.Indexes {
+			if i.Comment == "" {
+				continue
+			}
+			ac.IndexComments[i.Name] = i.Comment
+		}
+		for _, c := range t.Constraints {
+			if c.Comment == "" {
+				continue
+			}
+			ac.ConstraintComments[c.Name] = c.Comment
+		}
+		for _, trig := range t.Triggers {
+			if trig.Comment == "" {
+				continue
+			}
+			ac.TriggerComments[trig.Name] = trig.Comment
+		}
+		for _, l := range t.Labels {
+			ac.Labels = append(ac.Labels, l.Name)
+		}
+		cfg.Comments = append(cfg.Comments, ac)
+	}
+
+	for _, r := range s.Relations {
+		ar := config.AdditionalRelation{
+			Table:         r.Table.Name,
+			Columns:       []string{},
+			ParentTable:   r.ParentTable.Name,
+			ParentColumns: []string{},
+			Def:           r.Def,
+		}
+		for _, c := range r.Columns {
+			ar.Columns = append(ar.Columns, c.Name)
+		}
+		for _, c := range r.ParentColumns {
+			ar.ParentColumns = append(ar.ParentColumns, c.Name)
+		}
+		cfg.Relations = append(cfg.Relations, ar)
+	}
+
+	return cfg, nil
+}
+
 func uniq(a []string) []string {
 	m := map[string]struct{}{}
 	for _, e := range a {
@@ -268,9 +299,4 @@ func uniq(a []string) []string {
 		}
 	}
 	return u
-}
-
-func (b *Builder) MergeConfig(dst, src *config.Config) (*config.Config, error) {
-	err := mergo.Merge(dst, *src, mergo.WithOverride, mergo.WithTransformers(configTransformer{}))
-	return dst, err
 }

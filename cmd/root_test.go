@@ -11,8 +11,11 @@ import (
 )
 
 func TestRunBuild(t *testing.T) {
-	cases := []string{"case_config", "case_schema", "case_postgres_schema"}
+	cases := []string{"case_config", "case_schema", "case_postgres_schema", "case_prune"}
 	for _, c := range cases {
+		os.Setenv("TBLS_SCHEMA", "")
+		os.Setenv("TBLS_CONFIG_PATH", "")
+
 		dir := filepath.Join(testdataDir(), c)
 
 		// TBLS_SCHEMA

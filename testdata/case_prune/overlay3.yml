@@ -1,0 +1,14 @@
+comments:
+-
+  table: non-existent-table
+  tableComment: Non-existent table (overlay3)
+  columnComments:
+    a: a (overlay3)
+    b: b (overlay3)
+relations:
+- table: non-existent-table
+  columns:
+    - user_id
+  parentTable: users
+  parentColumns:
+    - id
