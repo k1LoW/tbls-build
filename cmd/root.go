@@ -258,9 +258,9 @@ func pruneConfig(c *config.Config, s *schema.Schema) (*config.Config, error) {
 	return c, nil
 }
 
-type commentsTransformer struct{}
+type configTransformer struct{}
 
-func (t commentsTransformer) Transformer(typ reflect.Type) func(dst, src reflect.Value) error {
+func (t configTransformer) Transformer(typ reflect.Type) func(dst, src reflect.Value) error {
 	if typ == reflect.TypeOf([]config.AdditionalComment{}) {
 		return func(dst, src reflect.Value) error {
 			if dst.CanSet() {
@@ -272,8 +272,8 @@ func (t commentsTransformer) Transformer(typ reflect.Type) func(dst, src reflect
 				if !ok {
 					return errors.New("transform error")
 				}
-				a := srcv[:]
-				a = append(a, dstv...)
+				a := dstv[:]
+				a = append(a, srcv...)
 				b := []config.AdditionalComment{}
 				m := map[string]config.AdditionalComment{}
 				for _, v := range a {
@@ -301,7 +301,6 @@ func (t commentsTransformer) Transformer(typ reflect.Type) func(dst, src reflect
 						}
 						// labels
 						ac.Labels = uniq(append(ac.Labels, v.Labels...))
-
 						m[key] = ac
 					} else {
 						m[key] = v
@@ -319,12 +318,6 @@ func (t commentsTransformer) Transformer(typ reflect.Type) func(dst, src reflect
 			return nil
 		}
 	}
-	return nil
-}
-
-type relationsTransformer struct{}
-
-func (t relationsTransformer) Transformer(typ reflect.Type) func(dst, src reflect.Value) error {
 	if typ == reflect.TypeOf([]config.AdditionalRelation{}) {
 		return func(dst, src reflect.Value) error {
 			if dst.CanSet() {
@@ -371,7 +364,7 @@ func uniq(a []string) []string {
 }
 
 func mergeConfig(a, b *config.Config) (*config.Config, error) {
-	err := mergo.Merge(a, *b, mergo.WithOverride, mergo.WithTransformers(commentsTransformer{}))
+	err := mergo.Merge(a, *b, mergo.WithOverride, mergo.WithTransformers(configTransformer{}))
 	return a, err
 }
 

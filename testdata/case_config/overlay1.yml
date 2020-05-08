@@ -9,3 +9,10 @@ comments:
   labels:
     - b
     - c
+relations:
+- table: user_options
+  columns:
+    - user_id
+  parentTable: users
+  parentColumns:
+    - id

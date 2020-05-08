@@ -7,5 +7,14 @@ comments:
   columnComments:
     title: blog title (underlay1)
     body: blog body (underlay1)
+relations:
+- table: user_options
+  columns:
+    - user_id
+  parentTable: users
+  parentColumns:
+    - id
+  
+
 
   

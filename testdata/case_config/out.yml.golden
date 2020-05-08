@@ -5,21 +5,34 @@ er:
   format: png
   comment: true
   distance: 1
-comments:
-- table: users
-  tableComment: users (underlay2)
-  columnComments:
-    email: email (underlay2)
-    password: password (overlay1)
-    username: username (underlay2)
-  labels:
-  - b
-  - c
-  - a
+relations:
+- table: user_access_logs
+  columns:
+  - user_id
+  parentTable: users
+  parentColumns:
+  - id
 - table: user_options
-  tableComment: user_options (underlay2)
+  columns:
+  - user_id
+  parentTable: users
+  parentColumns:
+  - id
+comments:
 - table: posts
   tableComment: blog posts (underlay1)
   columnComments:
     body: blog body (underlay1)
     title: blog title (underlay1)
+- table: users
+  tableComment: users (overlay1)
+  columnComments:
+    email: email (underlay2)
+    password: password (overlay1)
+    username: username (overlay1)
+  labels:
+  - a
+  - b
+  - c
+- table: user_options
+  tableComment: user_options (underlay2)
