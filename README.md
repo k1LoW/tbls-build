@@ -2,7 +2,6 @@
 <br>
 <img src="https://github.com/k1LoW/tbls-build/raw/master/img/logo.png" width="200" alt="tbls-build">
 <br>
-<h1>-build</h1>
 <br>
 </p>
 
