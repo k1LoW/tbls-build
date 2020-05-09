@@ -13,8 +13,13 @@
 
 tbls-build is provided as an external subcommand of [tbls](https://github.com/k1LoW/tbls).
 
-``` console
-$ tbls build -c tbls.yml --underlay default.yml --overlay override.yml --underlay original.json --overlay add.json --out customized-tbls.yml
+```
+$ tbls build -c tbls.yml \
+--underlay default.yml \
+--overlay override.yml \
+--underlay original.json \
+--overlay add.json \
+--out customized-tbls.yml
 ```
 
 ### Architecture
