@@ -26,6 +26,12 @@ import (
 	"io"
 	"os"
 
+	"github.com/goccy/go-yaml"
+	"github.com/k1LoW/tbls-build/builder"
+	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/datasource"
+	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +46,7 @@ var rootCmd = &cobra.Command{
 	Short: "build tbls config",
 	Long:  `build tbls config.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := runBuild(cmd, os.Stdout)
+		err := runBuild(underlays, overlays, os.Stdout)
 		if err != nil {
 			cmd.PrintErrln(err)
 			os.Exit(1)
@@ -48,7 +54,84 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func runBuild(cmd *cobra.Command, stdout io.Writer) error {
+func runBuild(underlays, overlays []string, stdout io.Writer) error {
+	var (
+		s   *schema.Schema
+		err error
+	)
+	sstr := os.Getenv("TBLS_SCHEMA")
+	if sstr != "" {
+		s, err = datasource.AnalyzeJSONString(os.Getenv("TBLS_SCHEMA"))
+		if err != nil {
+			return err
+		}
+	}
+
+	b := builder.New(s)
+
+	c, err := config.New()
+	if err != nil {
+		return err
+	}
+
+	// underlays
+	for _, u := range underlays {
+		uc, err := b.LoadConfigFile(u)
+		if err != nil {
+			return err
+		}
+		uc, err = b.PruneConfig(uc)
+		if err != nil {
+			return err
+		}
+		c, err = b.MergeConfig(c, uc)
+		if err != nil {
+			return err
+		}
+	}
+
+	// -c
+	cc, err := config.New()
+	if err != nil {
+		return err
+	}
+	configPath := os.Getenv("TBLS_CONFIG_PATH")
+	if configPath != "" {
+		if err := cc.LoadConfigFile(configPath); err != nil {
+			return err
+		}
+	}
+	cc, err = b.PruneConfig(cc)
+	if err != nil {
+		return err
+	}
+	c, err = b.MergeConfig(c, cc)
+	if err != nil {
+		return err
+	}
+
+	// overlays
+	for _, o := range overlays {
+		oc, err := b.LoadConfigFile(o)
+		if err != nil {
+			return err
+		}
+		oc, err = b.PruneConfig(oc)
+		if err != nil {
+			return err
+		}
+		c, err = b.MergeConfig(c, oc)
+		if err != nil {
+			return err
+		}
+	}
+
+	d := yaml.NewEncoder(stdout)
+	defer d.Close()
+	if err := d.Encode(c); err != nil {
+		return errors.WithStack(err)
+	}
+
 	return nil
 }
 
@@ -60,7 +143,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string, "underlay")
-	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "v", []string, "overlay")
-	rootCmd.Flags().StringVarP(&out, "out", "o", "", "output file path")
+	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string{}, "underlay")
+	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "o", []string{}, "overlay")
+	rootCmd.Flags().StringVarP(&out, "out", "", "", "output file path")
 }

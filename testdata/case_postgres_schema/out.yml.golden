@@ -1,0 +1,38 @@
+name: name underlay1
+dsn: pg://postgres:pgpass@localhost:5432/testdb
+docPath: new/doc/path
+er:
+  format: png
+  comment: true
+  distance: 1
+relations:
+- table: public.user_access_logs
+  columns:
+  - user_id
+  parentTable: public.users
+  parentColumns:
+  - id
+- table: public.user_options
+  columns:
+  - user_id
+  parentTable: public.users
+  parentColumns:
+  - id
+comments:
+- table: public.posts
+  tableComment: blog posts (underlay1)
+  columnComments:
+    body: blog body (underlay1)
+    title: blog title (underlay1)
+- table: public.users
+  tableComment: users (overlay1)
+  columnComments:
+    email: email (underlay2)
+    password: password (overlay1)
+    username: username (overlay1)
+  labels:
+  - a
+  - b
+  - c
+- table: public.user_options
+  tableComment: user_options (underlay2)

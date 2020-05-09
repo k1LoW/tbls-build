@@ -1,0 +1,15 @@
+er:
+  comment: true
+comments:
+-
+  table: users
+  tableComment: users (underlay2)
+  columnComments:
+    username: username (underlay2)
+    email: email (underlay2)
+  labels:
+    - a
+    - b
+-
+  table: user_options
+  tableComment: user_options (underlay2)

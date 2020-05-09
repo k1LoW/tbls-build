@@ -1,0 +1,2 @@
+dsn: pg://postgres:pgpass@localhost:5432/testdb
+docPath: This is not displayed (tbls.yml)
