@@ -1,0 +1,74 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+-
+  id: tbls-build-linux
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls-build.version={{.Version}} -X github.com/k1LoW/tbls-build.commit={{.FullCommit}} -X github.com/k1LoW/tbls-build.date={{.Date}} -X github.com/k1LoW/tbls-build/version.Version={{.Version}}
+-
+  id: tbls-build-darwin
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - darwin
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls-build.version={{.Version}} -X github.com/k1LoW/tbls-build.commit={{.FullCommit}} -X github.com/k1LoW/tbls-build.date={{.Date}} -X github.com/k1LoW/tbls-build/version.Version={{.Version}}
+archives:
+-
+  id: tbls-build-archive
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: darwin
+      format: zip
+  files:
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true
+brews:
+-
+  name: tbls-build
+  github:
+    owner: k1LoW
+    name: homebrew-tap
+  commit_author:
+    name: k1LoW
+    email: k1lowxb@gmail.com
+  homepage: https://github.com/k1LoW/tbls-build
+  description: tbls-build is an external subcommand of tbls for customizing config file of tbls using other tbls.yml or schema.json.
+  dependencies:
+    - tbls
+  install: |
+    system './tbls-build', 'completion', 'bash', '--out', 'tbls-build.bash'
+    system './tbls-build', 'completion', 'zsh', '--out', 'tbls-build.zsh'
+    bin.install 'tbls-build'
+    bash_completion.install 'tbls-build.bash' => 'tbls-build'
+    zsh_completion.install 'tbls-build.zsh' => '_tbls-build'
+nfpms:
+  -
+    id: tbls-build-nfpms
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    builds:
+    - tbls-build-linux
+    homepage: https://github.com/k1LoW/tbls-build
+    maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>
+    description: tbls-build is an external subcommand of tbls for customizing config file of tbls using other tbls.yml or schema.json.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    dependencies:
+      - tbls
+    bindir: /usr/bin
+    epoch: 1
