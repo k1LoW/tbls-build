@@ -38,6 +38,7 @@ import (
 var (
 	underlays []string
 	overlays  []string
+	out       string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -46,8 +47,20 @@ var rootCmd = &cobra.Command{
 	Short: "tbls-build is an external subcommand of tbls for customizing config file of tbls",
 	Long:  `tbls-build is an external subcommand of tbls for customizing config file of tbls using other tbls.yml or schema.json.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := runBuild(underlays, overlays, os.Stdout)
-		if err != nil {
+		var (
+			o   *os.File
+			err error
+		)
+		if out == "" {
+			o = os.Stdout
+		} else {
+			o, err = os.Create(out)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(1)
+			}
+		}
+		if err := runBuild(underlays, overlays, o); err != nil {
 			cmd.PrintErrln(err)
 			os.Exit(1)
 		}
