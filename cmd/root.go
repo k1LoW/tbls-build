@@ -76,17 +76,23 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 
 	// underlays
 	for _, u := range underlays {
-		uc, err := b.LoadConfigFile(u)
+		paths, err := builder.LoadPatchFiles(u)
 		if err != nil {
 			return err
 		}
-		uc, err = b.PruneConfig(uc)
-		if err != nil {
-			return err
-		}
-		c, err = b.MergeConfig(c, uc)
-		if err != nil {
-			return err
+		for _, p := range paths {
+			uc, err := b.LoadPatchFile(p)
+			if err != nil {
+				return err
+			}
+			uc, err = b.PruneConfig(uc)
+			if err != nil {
+				return err
+			}
+			c, err = b.MergeConfig(c, uc)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -112,17 +118,23 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 
 	// overlays
 	for _, o := range overlays {
-		oc, err := b.LoadConfigFile(o)
+		paths, err := builder.LoadPatchFiles(o)
 		if err != nil {
 			return err
 		}
-		oc, err = b.PruneConfig(oc)
-		if err != nil {
-			return err
-		}
-		c, err = b.MergeConfig(c, oc)
-		if err != nil {
-			return err
+		for _, p := range paths {
+			oc, err := b.LoadPatchFile(p)
+			if err != nil {
+				return err
+			}
+			oc, err = b.PruneConfig(oc)
+			if err != nil {
+				return err
+			}
+			c, err = b.MergeConfig(c, oc)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -143,7 +155,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string{}, "underlay")
-	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "o", []string{}, "overlay")
+	rootCmd.Flags().StringSliceVarP(&underlays, "underlay", "u", []string{}, "patch file or directory for underlaying")
+	rootCmd.Flags().StringSliceVarP(&overlays, "overlay", "o", []string{}, "patch file or directory for overlaying")
 	rootCmd.Flags().StringVarP(&out, "out", "", "", "output file path")
 }

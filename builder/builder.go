@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 
 	"github.com/imdario/mergo"
 	"github.com/k1LoW/tbls/config"
@@ -32,7 +33,30 @@ func New(s *schema.Schema) *Builder {
 	}
 }
 
-func (b *Builder) LoadConfigFile(path string) (*config.Config, error) {
+func LoadPatchFiles(p string) ([]string, error) {
+	paths := []string{}
+	d, err := os.Stat(p)
+	if err != nil {
+		return paths, err
+	}
+	if d.IsDir() {
+		files, err := filepath.Glob(filepath.Join(p, "*"))
+		if err != nil {
+			return paths, err
+		}
+		sort.Slice(files, func(i, j int) bool { return filepath.Base(files[i]) < filepath.Base(files[j]) })
+		for _, f := range files {
+			if detectConfigOrSchema(f) != fileTypeUnknown {
+				paths = append(paths, f)
+			}
+		}
+	} else {
+		paths = []string{p}
+	}
+	return paths, nil
+}
+
+func (b *Builder) LoadPatchFile(path string) (*config.Config, error) {
 	path, err := filepath.Abs(path)
 	if err != nil {
 		return nil, err
