@@ -112,10 +112,17 @@ func (b *Builder) PruneConfig(cfg *config.Config) (*config.Config, error) {
 	// normalize table name and prune non-existent table
 	comments := []config.AdditionalComment{}
 	for _, c := range cfg.Comments {
-		if _, err := b.schema.FindTableByName(c.Table); err != nil {
+		t, err := b.schema.FindTableByName(c.Table)
+		if err != nil {
 			continue
 		}
 		c.Table = b.schema.NormalizeTableName(c.Table)
+		for n := range c.ColumnComments {
+			if _, err := t.FindColumnByName(n); err != nil {
+				delete(c.ColumnComments, n)
+			}
+		}
+
 		comments = append(comments, c)
 	}
 	cfg.Comments = comments
