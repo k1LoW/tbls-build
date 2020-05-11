@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.2.2](https://github.com/k1LoW/tbls-build/compare/v0.2.1...v0.2.2) (2020-05-11)
+
+
 ## [v0.2.1](https://github.com/k1LoW/tbls-build/compare/v0.2.0...v0.2.1) (2020-05-11)
 
 * Bump up tbls version to v1.38.2 [#3](https://github.com/k1LoW/tbls-build/pull/3) ([k1LoW](https://github.com/k1LoW))
