@@ -1,10 +1,15 @@
 comments:
 -
-  table: non-existent-table
-  tableComment: Non-existent table (overlay3)
+  table: users
   columnComments:
     a: a (overlay3)
     b: b (overlay3)
+-
+  table: non-existent-table
+  tableComment: Non-existent table (overlay3)
+  columnComments:
+    c: c (overlay3)
+    d: d (overlay3)
 relations:
 - table: non-existent-table
   columns:
