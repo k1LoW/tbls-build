@@ -74,7 +74,7 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 	)
 	sstr := os.Getenv("TBLS_SCHEMA")
 	if sstr != "" {
-		s, err = datasource.AnalyzeJSONString(os.Getenv("TBLS_SCHEMA"))
+		s, err = datasource.AnalyzeJSONStringOrFile(os.Getenv("TBLS_SCHEMA"))
 		if err != nil {
 			return err
 		}
