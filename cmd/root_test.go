@@ -12,7 +12,7 @@ import (
 
 var cases = []string{"case_config", "case_schema", "case_postgres_schema", "case_prune"}
 
-func TestRunBuild(t *testing.T) {
+func TestRunBuildFile(t *testing.T) {
 	for _, c := range cases {
 		os.Setenv("TBLS_SCHEMA", "")
 		os.Setenv("TBLS_CONFIG_PATH", "")
