@@ -82,11 +82,11 @@ tbls completion zsh > $fpath[1]/_tbls-build
 func runCompletion(cmd *cobra.Command, sh string, o io.Writer) error {
 	switch sh {
 	case "bash":
-		if err := cmd.GenBashCompletion(o); err != nil {
+		if err := cmd.Root().GenBashCompletion(o); err != nil {
 			return err
 		}
 	case "zsh":
-		if err := cmd.GenZshCompletion(o); err != nil {
+		if err := cmd.Root().GenZshCompletion(o); err != nil {
 			return err
 		}
 	}
