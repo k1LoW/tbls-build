@@ -24,10 +24,13 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/tbls-build/builder"
+	"github.com/k1LoW/tbls-build/version"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/schema"
@@ -56,13 +59,11 @@ var rootCmd = &cobra.Command{
 		} else {
 			o, err = os.Create(out)
 			if err != nil {
-				cmd.PrintErrln(err)
-				os.Exit(1)
+				printFatalln(cmd, err)
 			}
 		}
 		if err := runBuild(underlays, overlays, o); err != nil {
-			cmd.PrintErrln(err)
-			os.Exit(1)
+			printFatalln(cmd, err)
 		}
 	},
 }
@@ -161,10 +162,40 @@ func runBuild(underlays, overlays []string, stdout io.Writer) error {
 }
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	rootCmd.SetOut(os.Stdout)
+	rootCmd.SetErr(os.Stderr)
+
+	log.SetOutput(ioutil.Discard)
+	if env := os.Getenv("DEBUG"); env != "" {
+		debug, err := os.Create(fmt.Sprintf("%s.debug", version.Name))
+		if err != nil {
+			printFatalln(rootCmd, err)
+		}
+		log.SetOutput(debug)
 	}
+
+	if err := rootCmd.Execute(); err != nil {
+		printFatalln(rootCmd, err)
+	}
+}
+
+// https://github.com/spf13/cobra/pull/894
+func printErrln(c *cobra.Command, i ...interface{}) {
+	c.PrintErr(fmt.Sprintln(i...))
+}
+
+func printErrf(c *cobra.Command, format string, i ...interface{}) {
+	c.PrintErr(fmt.Sprintf(format, i...))
+}
+
+func printFatalln(c *cobra.Command, i ...interface{}) {
+	printErrln(c, i...)
+	os.Exit(1)
+}
+
+func printFatalf(c *cobra.Command, format string, i ...interface{}) {
+	printErrf(c, format, i...)
+	os.Exit(1)
 }
 
 func init() {
