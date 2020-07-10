@@ -2,7 +2,7 @@ name: name underlay1
 dsn: mysql://root:mypass@localhost:3306/testdb
 docPath: new/doc/path
 er:
-  format: png
+  format: svg
   comment: true
   distance: 1
 relations:

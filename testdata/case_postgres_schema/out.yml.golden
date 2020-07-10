@@ -2,7 +2,7 @@ name: name underlay1
 dsn: pg://postgres:pgpass@localhost:5432/testdb
 docPath: new/doc/path
 er:
-  format: png
+  format: svg
   comment: true
   distance: 1
 relations:
