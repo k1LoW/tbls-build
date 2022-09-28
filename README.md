@@ -32,11 +32,10 @@ $ tbls build -c tbls.yml \
 
 **deb:**
 
-Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
-
 ``` console
 $ export TBLS_BUILD_VERSION=X.X.X
-$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls-build/releases/download/v$TBLS_BUILD_VERSION/tbls-build_$TBLS_BUILD_VERSION-1_amd64.deb
+$ curl -o tbls-build.deb -L https://github.com/k1LoW/tbls-build/releases/download/v$TBLS_BUILD_VERSION/tbls-build_$TBLS_BUILD_VERSION-1_amd64.deb
+$ dpkg -i tbls-build.deb
 ```
 
 **RPM:**
