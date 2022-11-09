@@ -24,7 +24,6 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -165,7 +164,7 @@ func Execute() {
 	rootCmd.SetOut(os.Stdout)
 	rootCmd.SetErr(os.Stderr)
 
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	if env := os.Getenv("DEBUG"); env != "" {
 		debug, err := os.Create(fmt.Sprintf("%s.debug", version.Name))
 		if err != nil {
@@ -184,17 +183,8 @@ func printErrln(c *cobra.Command, i ...interface{}) {
 	c.PrintErr(fmt.Sprintln(i...))
 }
 
-func printErrf(c *cobra.Command, format string, i ...interface{}) {
-	c.PrintErr(fmt.Sprintf(format, i...))
-}
-
 func printFatalln(c *cobra.Command, i ...interface{}) {
 	printErrln(c, i...)
-	os.Exit(1)
-}
-
-func printFatalf(c *cobra.Command, format string, i ...interface{}) {
-	printErrf(c, format, i...)
 	os.Exit(1)
 }
 

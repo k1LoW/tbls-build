@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,7 +22,7 @@ func TestRunBuildFile(t *testing.T) {
 		{
 			path := filepath.Join(dir, "schema.json.env")
 			if _, err := os.Stat(path); err == nil {
-				b, err := ioutil.ReadFile(path)
+				b, err := os.ReadFile(path)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -59,7 +58,7 @@ func TestRunBuildFile(t *testing.T) {
 		got := stdout.Bytes()
 
 		// want
-		want, err := ioutil.ReadFile(filepath.Join(dir, "out.yml.golden"))
+		want, err := os.ReadFile(filepath.Join(dir, "out.yml.golden"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -81,7 +80,7 @@ func TestRunBuildDir(t *testing.T) {
 		{
 			path := filepath.Join(dir, "schema.json.env")
 			if _, err := os.Stat(path); err == nil {
-				b, err := ioutil.ReadFile(path)
+				b, err := os.ReadFile(path)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -111,7 +110,7 @@ func TestRunBuildDir(t *testing.T) {
 		got := stdout.Bytes()
 
 		// want
-		want, err := ioutil.ReadFile(filepath.Join(dir, "out.yml.golden"))
+		want, err := os.ReadFile(filepath.Join(dir, "out.yml.golden"))
 		if err != nil {
 			t.Fatal(err)
 		}
