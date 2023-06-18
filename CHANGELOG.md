@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.1](https://github.com/k1LoW/tbls-build/compare/v0.4.0...v0.4.1) - 2023-06-18
+### Other Changes
+- Use completion by spf13/cobra by @k1LoW in https://github.com/k1LoW/tbls-build/pull/13
+
 ## [v0.4.0](https://github.com/k1LoW/tbls-build/compare/v0.3.0...v0.4.0) - 2023-06-18
 ### Other Changes
 - Bump golang.org/x/text from 0.3.7 to 0.3.8 by @dependabot in https://github.com/k1LoW/tbls-build/pull/6
