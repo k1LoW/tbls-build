@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="https://github.com/k1LoW/tbls-build/raw/master/img/logo.png" width="200" alt="tbls-build">
+<img src="https://github.com/k1LoW/tbls-build/raw/main/img/logo.png" width="200" alt="tbls-build">
 <br>
 <br>
 </p>
