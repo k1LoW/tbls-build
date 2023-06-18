@@ -25,18 +25,21 @@ build:
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
-	go get github.com/Songmu/ghch/cmd/ghch
-	go get github.com/Songmu/gocredits/cmd/gocredits
-	go get github.com/securego/gosec/cmd/gosec
+	go install github.com/Songmu/ghch/cmd/ghch@latest
+	go install github.com/Songmu/gocredits/cmd/gocredits@latest
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
 
 prerelease:
+	git pull origin main --tag
+	go mod tidy
 	ghch -w -N ${VER}
-	gocredits . > CREDITS
+	gocredits . -w
 	git add CHANGELOG.md CREDITS
 	git commit -m'Bump up version number'
 	git tag ${VER}
 
 release:
-	goreleaser --rm-dist
+	git push origin main --tag
+	goreleaser --clean
 
 .PHONY: default test
