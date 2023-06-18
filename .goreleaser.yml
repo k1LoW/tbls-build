@@ -9,6 +9,9 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
+  goarch:
+    - amd64
+    - arm64
   ldflags:
     - -s -w -X github.com/k1LoW/tbls-build.version={{.Version}} -X github.com/k1LoW/tbls-build.commit={{.FullCommit}} -X github.com/k1LoW/tbls-build.date={{.Date}} -X github.com/k1LoW/tbls-build/version.Version={{.Version}}
 -
@@ -17,6 +20,9 @@ builds:
     - CGO_ENABLED=0
   goos:
     - darwin
+  goarch:
+    - amd64
+    - arm64
   ldflags:
     - -s -w -X github.com/k1LoW/tbls-build.version={{.Version}} -X github.com/k1LoW/tbls-build.commit={{.FullCommit}} -X github.com/k1LoW/tbls-build.date={{.Date}} -X github.com/k1LoW/tbls-build/version.Version={{.Version}}
 archives:
@@ -27,34 +33,17 @@ archives:
     - goos: darwin
       format: zip
   files:
+    - LICENSE
     - CREDITS
     - README.md
     - CHANGELOG.md
+  rlcp: true
 checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Version }}-next"
 changelog:
   skip: true
-brews:
--
-  name: tbls-build
-  github:
-    owner: k1LoW
-    name: homebrew-tap
-  commit_author:
-    name: k1LoW
-    email: k1lowxb@gmail.com
-  homepage: https://github.com/k1LoW/tbls-build
-  description: tbls-build is an external subcommand of tbls for customizing config file of tbls using other tbls.yml or schema.json.
-  dependencies:
-    - tbls
-  install: |
-    system './tbls-build', 'completion', 'bash', '--out', 'tbls-build.bash'
-    system './tbls-build', 'completion', 'zsh', '--out', 'tbls-build.zsh'
-    bin.install 'tbls-build'
-    bash_completion.install 'tbls-build.bash' => 'tbls-build'
-    zsh_completion.install 'tbls-build.zsh' => '_tbls-build'
 nfpms:
   -
     id: tbls-build-nfpms
