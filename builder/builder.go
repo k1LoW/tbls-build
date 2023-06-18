@@ -105,7 +105,7 @@ func (b *Builder) PruneConfig(cfg *config.Config) (*config.Config, error) {
 	if cfg.ER.Format == config.DefaultERFormat {
 		cfg.ER.Format = ""
 	}
-	if cfg.ER.Distance != nil && *cfg.ER.Distance == config.DefaultDistance {
+	if cfg.ER.Distance != nil && *cfg.ER.Distance == config.DefaultERDistance {
 		cfg.ER.Distance = nil
 	}
 
