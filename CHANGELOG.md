@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.4.0](https://github.com/k1LoW/tbls-build/compare/v0.3.0...v0.4.0) - 2023-06-18
+### Other Changes
+- Bump golang.org/x/text from 0.3.7 to 0.3.8 by @dependabot in https://github.com/k1LoW/tbls-build/pull/6
+- Bump golang.org/x/net from 0.0.0-20220624214902-1bab6f366d9e to 0.7.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/7
+- Bump golang.org/x/crypto from 0.0.0-20211209193657-4570a0811e8b to 0.1.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/8
+- Set up tagpr by @k1LoW in https://github.com/k1LoW/tbls-build/pull/11
+- Update go and pkgs by @k1LoW in https://github.com/k1LoW/tbls-build/pull/10
+
 ## [v0.3.0](https://github.com/k1LoW/tbls-build/compare/v0.2.2...v0.3.0) (2020-07-11)
 
 * Update completion [#5](https://github.com/k1LoW/tbls-build/pull/5) ([k1LoW](https://github.com/k1LoW))
@@ -17,4 +25,3 @@
 * `--underlay` and `--overlay` support directory [#1](https://github.com/k1LoW/tbls-build/pull/1) ([k1LoW](https://github.com/k1LoW))
 
 ## [v0.1.0](https://github.com/k1LoW/tbls-build/compare/e88506862867...v0.1.0) (2020-05-10)
-
