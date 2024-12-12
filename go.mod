@@ -1,6 +1,6 @@
 module github.com/k1LoW/tbls-build
 
-go 1.20
+go 1.22
 
 require (
 	github.com/goccy/go-yaml v1.11.0
