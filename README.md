@@ -63,4 +63,4 @@ $ go get github.com/k1LoW/tbls-build
 
 ## Requirements
 
-- [tbls](https://github.com/k1LoW/tbls) > 1.38.2
+- [tbls](https://github.com/k1LoW/tbls) > 1.81.0
