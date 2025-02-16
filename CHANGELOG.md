@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.0](https://github.com/k1LoW/tbls-build/compare/v0.4.4...v0.5.0) - 2025-02-16
+### Other Changes
+- Bump up tbls version to v1.81.0 by @yasu89 in https://github.com/k1LoW/tbls-build/pull/28
+
 ## [v0.4.4](https://github.com/k1LoW/tbls-build/compare/v0.4.3...v0.4.4) - 2024-12-12
 ### Other Changes
 - Bump golang.org/x/crypto from 0.14.0 to 0.17.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/19
