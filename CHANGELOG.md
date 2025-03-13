@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.6.0](https://github.com/k1LoW/tbls-build/compare/v0.5.0...v0.6.0) - 2025-03-13
+### Other Changes
+- Bump golang.org/x/net from 0.33.0 to 0.36.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/30
+
 ## [v0.5.0](https://github.com/k1LoW/tbls-build/compare/v0.4.4...v0.5.0) - 2025-02-16
 ### Other Changes
 - Bump up tbls version to v1.81.0 by @yasu89 in https://github.com/k1LoW/tbls-build/pull/28
