@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.7.0](https://github.com/k1LoW/tbls-build/compare/v0.6.0...v0.7.0) - 2025-03-22
+### Other Changes
+- Bump github.com/expr-lang/expr from 1.16.9 to 1.17.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/32
+- Bump github.com/golang-jwt/jwt/v5 from 5.2.1 to 5.2.2 by @dependabot in https://github.com/k1LoW/tbls-build/pull/34
+- Bump github.com/golang-jwt/jwt/v4 from 4.5.1 to 4.5.2 by @dependabot in https://github.com/k1LoW/tbls-build/pull/35
+
 ## [v0.6.0](https://github.com/k1LoW/tbls-build/compare/v0.5.0...v0.6.0) - 2025-03-13
 ### Other Changes
 - Bump golang.org/x/net from 0.33.0 to 0.36.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/30
