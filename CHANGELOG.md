@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.7.2](https://github.com/k1LoW/tbls-build/compare/v0.7.1...v0.7.2) - 2025-04-29
+### Other Changes
+- Bump github.com/snowflakedb/gosnowflake from 1.13.2 to 1.13.3 by @dependabot in https://github.com/k1LoW/tbls-build/pull/39
+
 ## [v0.7.1](https://github.com/k1LoW/tbls-build/compare/v0.7.0...v0.7.1) - 2025-04-18
 ### Other Changes
 - Bump golang.org/x/net from 0.36.0 to 0.38.0 by @dependabot in https://github.com/k1LoW/tbls-build/pull/37
