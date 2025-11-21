@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.8.0](https://github.com/k1LoW/tbls-build/compare/v0.7.3...v0.8.0) - 2025-11-21
+### Other Changes
+- Bump golang.org/x/crypto from 0.36.0 to 0.45.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/44
+- chore: setup tagpr labels by @k1LoW in https://github.com/k1LoW/tbls-build/pull/43
+
 ## [v0.7.3](https://github.com/k1LoW/tbls-build/compare/v0.7.2...v0.7.3) - 2025-05-31
 ### Other Changes
 - Bump github.com/cli/go-gh/v2 from 2.11.2 to 2.12.1 by @dependabot in https://github.com/k1LoW/tbls-build/pull/41
