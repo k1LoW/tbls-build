@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.1](https://github.com/k1LoW/tbls-build/compare/v0.8.0...v0.8.1) - 2026-03-01
+### Other Changes
+- Bump go.opentelemetry.io/otel/sdk from 1.35.0 to 1.40.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/47
+
 ## [v0.8.0](https://github.com/k1LoW/tbls-build/compare/v0.7.3...v0.8.0) - 2025-12-17
 ### Other Changes
 - Bump golang.org/x/crypto from 0.36.0 to 0.45.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/44
