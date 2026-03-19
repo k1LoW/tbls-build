@@ -29,7 +29,7 @@ require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/ClickHouse/ch-go v0.65.1 // indirect
 	github.com/ClickHouse/clickhouse-go/v2 v2.34.0 // indirect
-	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.5.2 // indirect
+	github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp v1.6.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.30.0 // indirect
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
