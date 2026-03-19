@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.2](https://github.com/k1LoW/tbls-build/compare/v0.8.1...v0.8.2) - 2026-03-19
+### Other Changes
+- Bump google.golang.org/grpc from 1.71.0 to 1.79.3 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/49
+
 ## [v0.8.1](https://github.com/k1LoW/tbls-build/compare/v0.8.0...v0.8.1) - 2026-03-01
 ### Other Changes
 - Bump go.opentelemetry.io/otel/sdk from 1.35.0 to 1.40.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/47
