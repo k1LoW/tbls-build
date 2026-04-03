@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.3](https://github.com/k1LoW/tbls-build/compare/v0.8.2...v0.8.3) - 2026-04-03
+### Other Changes
+- chore(deps): bump github.com/go-jose/go-jose/v4 from 4.1.3 to 4.1.4 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/51
+
 ## [v0.8.2](https://github.com/k1LoW/tbls-build/compare/v0.8.1...v0.8.2) - 2026-03-19
 ### Other Changes
 - Bump google.golang.org/grpc from 1.71.0 to 1.79.3 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/49
