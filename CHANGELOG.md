@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.8.4](https://github.com/k1LoW/tbls-build/compare/v0.8.3...v0.8.4) - 2026-04-08
+### Other Changes
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream from 1.6.7 to 1.7.8 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/54
+- chore(deps): bump go.opentelemetry.io/otel/sdk from 1.40.0 to 1.43.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/56
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/service/s3 from 1.71.1 to 1.97.3 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/53
+
 ## [v0.8.3](https://github.com/k1LoW/tbls-build/compare/v0.8.2...v0.8.3) - 2026-04-03
 ### Other Changes
 - chore(deps): bump github.com/go-jose/go-jose/v4 from 4.1.3 to 4.1.4 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/51
