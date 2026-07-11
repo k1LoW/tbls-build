@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.8.5](https://github.com/k1LoW/tbls-build/compare/v0.8.4...v0.8.5) - 2026-07-11
+
+### Other Changes
+- chore(deps): bump go.mongodb.org/mongo-driver from 1.17.3 to 1.17.7 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/57
+- chore(deps): bump golang.org/x/net from 0.48.0 to 0.55.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/59
+- chore(deps): bump golang.org/x/crypto from 0.51.0 to 0.52.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/60
+
 ## [v0.8.4](https://github.com/k1LoW/tbls-build/compare/v0.8.3...v0.8.4) - 2026-04-08
 ### Other Changes
 - chore(deps): bump github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream from 1.6.7 to 1.7.8 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/54
