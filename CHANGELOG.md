@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.8.6](https://github.com/k1LoW/tbls-build/compare/v0.8.5...v0.8.6) - 2026-09-28
+
+### Other Changes
+- chore(deps): bump google.golang.org/grpc from 1.79.3 to 1.82.1 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/61
+- chore(deps): bump go.opentelemetry.io/otel/sdk from 1.43.0 to 1.45.0 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/64
+- ci: generate CREDITS with gocredits v1.0.0 from a make target by @k1LoW in https://github.com/k1LoW/tbls-build/pull/65
+- chore(deps): bump google.golang.org/grpc from 1.82.1 to 1.83.2 by @dependabot[bot] in https://github.com/k1LoW/tbls-build/pull/63
+
 ## [v0.8.5](https://github.com/k1LoW/tbls-build/compare/v0.8.4...v0.8.5) - 2026-07-11
 
 ### Other Changes
