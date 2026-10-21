@@ -91,7 +91,7 @@ require (
 	github.com/k1LoW/expand v0.16.1 // indirect
 	github.com/k1LoW/ghfs v1.5.0 // indirect
 	github.com/k1LoW/go-github-client/v67 v67.0.16 // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/minio/pkg v1.7.5 // indirect
